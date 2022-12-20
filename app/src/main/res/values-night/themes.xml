@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.Share_youtube_title" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -12,7 +12,18 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <!-- ToolBar -->
+        <item name="navigationIconTint">?android:textColorPrimary</item>
+        <item name="iconTint">?android:textColorPrimary</item>
+        <!-- 遷移アニメーション -->
         <item name="android:windowEnterTransition">@android:transition/slide_right</item>
         <item name="android:windowExitTransition">@android:transition/slide_left</item>
+        <!-- 文字色 -->
+        <item name="android:textColorPrimary">@color/white</item>
+
+    </style>
+    <!-- switchのテキストサイズ -->
+    <style name="SwitchStyle">
+        <item name="android:textSize">24sp</item>
     </style>
 </resources>

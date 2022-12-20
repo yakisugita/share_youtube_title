@@ -12,6 +12,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <!-- ToolBar -->
+        <item name="navigationIconTint">?android:textColorPrimary</item>
+        <item name="iconTint">?android:textColorPrimary</item>
+        <!-- 遷移アニメーション -->
         <item name="android:windowEnterTransition">@android:transition/slide_right</item>
         <item name="android:windowExitTransition">@android:transition/slide_left</item>
     </style>

@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">ようつべタイトル共有</string>
-    <string name="app_name_share">タイトル付きで共有</string>
+    <string name="app_name">ようつべ共有</string>
     <string name="toolbar_title_settings">アプリ設定</string>
     <string name="action_settings">設定</string>
 </resources>

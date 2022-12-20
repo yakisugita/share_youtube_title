@@ -33,6 +33,14 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             startGetRequest()
         }
+
+        when {
+            intent?.action == Intent.ACTION_SEND -> {
+                if ("text/plain" == intent.type) {
+                    handleSendText(intent) // Handle text being sent
+                }
+            }
+        }
     }
 
     // ActionBarのボタンが押されたとき
@@ -57,6 +65,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return true
+    }
+
+    private fun handleSendText(intent: Intent) {
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            Toast.makeText(applicationContext, "共有されました:"+it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     // OkHttpClientを作成
@@ -97,5 +111,15 @@ class MainActivity : AppCompatActivity() {
                 // 必要に応じてCallback
             }
         })
+    }
+
+    public class Settings {
+        public var is_channel: Boolean = false
+        public var is_mention: Boolean = false
+        public var is_thumbnail: Boolean = false
+        public var thumbnail_type: Int = 0
+        public var is_api: Boolean = false
+        public var api_key: String = ""
+        public var is_simple: Boolean = false
     }
 }
