@@ -1,5 +1,6 @@
 package net.yakijake.share_youtube_title
 
+import android.app.ActivityOptions
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         R.id.action_settings -> {
             Toast.makeText(applicationContext, "アプリ設定を開きます", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, SettingsActivity::class.java)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@MainActivity).toBundle())
             true
         }
         android.R.id.home -> {
