@@ -18,5 +18,14 @@
         <!-- 遷移アニメーション -->
         <item name="android:windowEnterTransition">@android:transition/slide_right</item>
         <item name="android:windowExitTransition">@android:transition/slide_left</item>
+        <!-- 文字色 -->
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <!-- switchのテキストサイズ -->
+    <style name="SwitchStyle">
+        <item name="android:textSize">24sp</item>
+    </style>
+    <style name="RadioStyle">
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>

@@ -18,55 +18,102 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Switch
-        android:id="@+id/ch_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="チャンネル名を含める"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/simple_switch" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-    <Switch
-        android:id="@+id/thumb_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="サムネイルを含める"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mention_switch" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="vertical">
 
-    <Switch
-        android:id="@+id/api_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="自分で発行したAPIキーを使う"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/thumb_switch" />
+            <Switch
+                android:id="@+id/simple_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:text="簡易モード"
+                android:theme="@style/SwitchStyle" />
 
-    <Switch
-        android:id="@+id/mention_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="\@YouTubeを含める"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ch_switch" />
+            <Switch
+                android:id="@+id/mention_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="\@YouTubeを含める"
+                android:theme="@style/SwitchStyle" />
 
-    <Switch
-        android:id="@+id/simple_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="簡易モード"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:switchTextAppearance="@style/SwitchStyle"/>
+            <Switch
+                android:id="@+id/thumb_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="サムネイルを含める"
+                android:theme="@style/SwitchStyle" />
+
+            <RadioGroup
+                android:id="@+id/thumb_type_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="32dp">
+
+                <RadioButton
+                    android:id="@+id/thumb_type_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="URL"
+                    android:theme="@style/RadioStyle" />
+
+                <RadioButton
+                    android:id="@+id/thumb_type_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="画像データ"
+                    android:theme="@style/RadioStyle" />
+            </RadioGroup>
+
+            <Switch
+                android:id="@+id/ch_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="チャンネル名を含める"
+                android:theme="@style/SwitchStyle" />
+
+            <Switch
+                android:id="@+id/api_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="自分で発行したAPIキーを使う"
+                android:theme="@style/SwitchStyle" />
+
+            <EditText
+                android:id="@+id/api_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Name" />
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="保存して閉じる" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
