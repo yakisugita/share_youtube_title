@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
-import java.io.BufferedReader
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -28,53 +27,53 @@ class SettingsActivity : AppCompatActivity() {
         Log.d("APP DEBUG LOG", "Setup settings UI..")
         val settingsData = MainActivity.Settings()
 
-        val simple_switch = findViewById<Switch>(R.id.simple_switch)
-        val mention_switch = findViewById<Switch>(R.id.mention_switch)
-        val thumb_switch = findViewById<Switch>(R.id.thumb_switch)
-        val thumb_type_group = findViewById<RadioGroup>(R.id.thumb_type_group)
-        val ch_switch = findViewById<Switch>(R.id.ch_switch)
-        val api_switch = findViewById<Switch>(R.id.api_switch)
-        val api_key = findViewById<EditText>(R.id.api_key)
+        val simpleSwitch = findViewById<Switch>(R.id.simple_switch)
+        val mentionSwitch = findViewById<Switch>(R.id.mention_switch)
+        val thumbSwitch = findViewById<Switch>(R.id.thumb_switch)
+        val thumbTypeGroup = findViewById<RadioGroup>(R.id.thumb_type_group)
+        val chSwitch = findViewById<Switch>(R.id.ch_switch)
+        val apiSwitch = findViewById<Switch>(R.id.api_switch)
+        val apiKey = findViewById<EditText>(R.id.api_key)
 
-        simple_switch.isChecked = settingsData.is_simple
-        mention_switch.isChecked = settingsData.is_mention
-        thumb_switch.isChecked = settingsData.is_thumbnail
-        if (settingsData.thumbnail_type == 0) {
-            thumb_type_group.check(R.id.thumb_type_url)
+        simpleSwitch.isChecked = settingsData.isSimple
+        mentionSwitch.isChecked = settingsData.isMention
+        thumbSwitch.isChecked = settingsData.isThumbnail
+        if (settingsData.thumbnailType == 0) {
+            thumbTypeGroup.check(R.id.thumb_type_url)
         } else {
-            thumb_type_group.check(R.id.thumb_type_img)
+            thumbTypeGroup.check(R.id.thumb_type_img)
         }
-        ch_switch.isChecked = settingsData.is_channel
-        api_switch.isChecked = settingsData.is_api
-        api_key.setText(settingsData.api_key)
+        chSwitch.isChecked = settingsData.isChannel
+        apiSwitch.isChecked = settingsData.isApi
+        apiKey.setText(settingsData.apiKey)
 
         Log.d("APP DEBUG LOG", "Setup UI done")
 
 
-        val save_button = findViewById<Button>(R.id.save_button)
-        save_button.setOnClickListener {
+        val saveButton = findViewById<Button>(R.id.save_button)
+        saveButton.setOnClickListener {
             // 設定を上書きしてファイルにも保存
             Log.d("APP DEBUG LOG", "Saving settings...")
 
-            settingsData.is_simple = simple_switch.isChecked
-            settingsData.is_mention = mention_switch.isChecked
-            settingsData.is_thumbnail = thumb_switch.isChecked
-            if (thumb_type_group.checkedRadioButtonId == R.id.thumb_type_url) {
-                settingsData.thumbnail_type = 0
+            settingsData.isSimple = simpleSwitch.isChecked
+            settingsData.isMention = mentionSwitch.isChecked
+            settingsData.isThumbnail = thumbSwitch.isChecked
+            if (thumbTypeGroup.checkedRadioButtonId == R.id.thumb_type_url) {
+                settingsData.thumbnailType = 0
             } else {
-                settingsData.thumbnail_type = 1
+                settingsData.thumbnailType = 1
             }
-            settingsData.is_channel = ch_switch.isChecked
-            settingsData.is_api = api_switch.isChecked
-            settingsData.api_key = api_key.text.toString()
+            settingsData.isChannel = chSwitch.isChecked
+            settingsData.isApi = apiSwitch.isChecked
+            settingsData.apiKey = apiKey.text.toString()
 
             // ファイルに出力
             Log.d("APP DEBUG LOG", "filesDir:"+applicationContext.filesDir)
-            val settings_json = Gson().toJson(settingsData)
+            val settingsJson = Gson().toJson(settingsData)
             val fileName = "settings.json"
             val file = File(applicationContext.filesDir, fileName)
             try {
-                FileWriter(file).use { writer -> writer.write(settings_json) }
+                FileWriter(file).use { writer -> writer.write(settingsJson) }
             } catch (e: IOException) {
                 e.printStackTrace()
             }

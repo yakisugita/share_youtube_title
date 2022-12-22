@@ -9,7 +9,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import okhttp3.*
@@ -34,11 +33,9 @@ class MainActivity : AppCompatActivity() {
             startGetRequest()
         }
 
-        when {
-            intent?.action == Intent.ACTION_SEND -> {
-                if ("text/plain" == intent.type) {
-                    handleSendText(intent) // Handle text being sent
-                }
+        if (intent?.action == Intent.ACTION_SEND) {
+            if ("text/plain" == intent.type) {
+                handleSendText(intent) // Handle text being sent
             }
         }
     }
@@ -69,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleSendText(intent: Intent) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-            Toast.makeText(applicationContext, "共有されました:"+it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "共有されました:$it", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -79,11 +76,11 @@ class MainActivity : AppCompatActivity() {
         .readTimeout(5000.toLong(), TimeUnit.MILLISECONDS)
         .build()
 
-    fun startGetRequest() {
-        val video_id = findViewById<EditText>(R.id.textUri).text.toString().replace("https://youtu.be/","")
+    private fun startGetRequest() {
+        val videoId = findViewById<EditText>(R.id.textUri).text.toString().replace("https://youtu.be/","")
         // Requestを作成
         val request = Request.Builder()
-            .url("https://yakijake.net/products/share_youtube_title/via.php?id=" + video_id)
+            .url("https://yakijake.net/products/share_youtube_title/via.php?id=$videoId")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -91,19 +88,21 @@ class MainActivity : AppCompatActivity() {
                 // Responseの読み出し
 //                val responseBody = response.body?.string().orEmpty()
                 // 必要に応じてCallback
-                val json_data = JSONObject(response.body?.string())
-                val video_title: String = json_data.getString("title")
-                val channel_title: String = json_data.getString("channelTitle")
-                val video_id: String = json_data.getString("video_id")
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, video_title + " / " + channel_title + "\nhttps://youtu.be/" + video_id)
-                    type = "text/plain"
+                if (response.body == null) {
+                    Toast.makeText(applicationContext, "response bodyがnullです", Toast.LENGTH_SHORT).show()
+                } else {
+                    val jsonData = JSONObject(response.body?.string().toString())
+                    val videoTitle: String = jsonData.getString("title")
+                    val channelTitle: String = jsonData.getString("channelTitle")
+                    val jsonVideoId: String = jsonData.getString("video_id")
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, "$videoTitle / $channelTitle\nhttps://youtu.be/$jsonVideoId")
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
                 }
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
-//                findViewById<TextView>(R.id.titletextView).text = video_title
-//                Log.d("TAG", video_title)
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -113,13 +112,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    public class Settings {
-        public var is_channel: Boolean = false
-        public var is_mention: Boolean = false
-        public var is_thumbnail: Boolean = false
-        public var thumbnail_type: Int = 0
-        public var is_api: Boolean = false
-        public var api_key: String = ""
-        public var is_simple: Boolean = false
+    // publicになる
+    class Settings {
+        // publicのやつの下なら特に定義しなくてもpublicになる。
+        var isChannel: Boolean = false
+        var isMention: Boolean = false
+        var isThumbnail: Boolean = false
+        var thumbnailType: Int = 0
+        var isApi: Boolean = false
+        var apiKey: String = ""
+        var isSimple: Boolean = false
     }
 }
