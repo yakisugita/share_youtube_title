@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // val gsonData = gsonData()
         // 設定から取得して画面のSwitchとかを現在の状態にする
-        Log.d("APP DEBUG LOG", "Setup settings UI..")
+        Log.d("SettingsActivity", "Setup settings UI..")
         val settingsData = MainActivity.Settings()
 
         val simpleSwitch = findViewById<SwitchMaterial>(R.id.simple_switch)
@@ -48,13 +48,13 @@ class SettingsActivity : AppCompatActivity() {
         apiSwitch.isChecked = settingsData.isApi
         apiKey.setText(settingsData.apiKey)
 
-        Log.d("APP DEBUG LOG", "Setup UI done")
+        Log.d("SettingsActivity", "Setup UI done")
 
 
         val saveButton = findViewById<Button>(R.id.save_button)
         saveButton.setOnClickListener {
             // 設定を上書きしてファイルにも保存
-            Log.d("APP DEBUG LOG", "Saving settings...")
+            Log.d("SettingsActivity", "Saving settings...")
 
             settingsData.isSimple = simpleSwitch.isChecked
             settingsData.isMention = mentionSwitch.isChecked
@@ -69,7 +69,7 @@ class SettingsActivity : AppCompatActivity() {
             settingsData.apiKey = apiKey.text.toString()
 
             // ファイルに出力
-            Log.d("APP DEBUG LOG", "filesDir:"+applicationContext.filesDir)
+            Log.d("SettingsActivity", "filesDir:"+applicationContext.filesDir)
             val settingsJson = Gson().toJson(settingsData)
             val fileName = "settings.json"
             val file = File(applicationContext.filesDir, fileName)
@@ -78,7 +78,7 @@ class SettingsActivity : AppCompatActivity() {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            Log.d("APP DEBUG LOG", "Save settings done")
+            Log.d("SettingsActivity", "Save settings done")
             Toast.makeText(applicationContext, "設定を変更しました!", Toast.LENGTH_SHORT).show()
             // アニメーションしながらfinish
             finishAfterTransition()
