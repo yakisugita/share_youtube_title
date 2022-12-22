@@ -2,4 +2,18 @@
     <string name="app_name">ようつべ共有</string>
     <string name="toolbar_title_settings">アプリ設定</string>
     <string name="action_settings">設定</string>
+    <!--  activity_main.xml用  -->
+    <string name="main.view_get_title">タイトルを取得</string>
+    <string name="main.edit_uri">ここにURLを入力/貼り付け</string>
+    <string name="main.button_get">タイトル取得</string>
+    <!--  activity_main.xml用  -->
+    <string name="settings.switch_simple">簡易モード</string>
+    <string name="settings.switch_mention">\@Youtubeを含める</string>
+    <string name="settings.switch_thumb">サムネイルを含める</string>
+    <string name="settings.radio_type_url">URL</string>
+    <string name="settings.radio_type_img">画像データ</string>
+    <string name="settings.switch_ch">チャンネル名を含める</string>
+    <string name="settings.switch_api">自分で発行したAPIキーを使う</string>
+    <string name="settings.edit_api_key">APIキーを入力</string>
+    <string name="settings.button_save">保存して閉じる</string>
 </resources>

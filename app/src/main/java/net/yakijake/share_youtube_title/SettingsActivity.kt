@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -27,12 +28,12 @@ class SettingsActivity : AppCompatActivity() {
         Log.d("APP DEBUG LOG", "Setup settings UI..")
         val settingsData = MainActivity.Settings()
 
-        val simpleSwitch = findViewById<Switch>(R.id.simple_switch)
-        val mentionSwitch = findViewById<Switch>(R.id.mention_switch)
-        val thumbSwitch = findViewById<Switch>(R.id.thumb_switch)
+        val simpleSwitch = findViewById<SwitchMaterial>(R.id.simple_switch)
+        val mentionSwitch = findViewById<SwitchMaterial>(R.id.mention_switch)
+        val thumbSwitch = findViewById<SwitchMaterial>(R.id.thumb_switch)
         val thumbTypeGroup = findViewById<RadioGroup>(R.id.thumb_type_group)
-        val chSwitch = findViewById<Switch>(R.id.ch_switch)
-        val apiSwitch = findViewById<Switch>(R.id.api_switch)
+        val chSwitch = findViewById<SwitchMaterial>(R.id.ch_switch)
+        val apiSwitch = findViewById<SwitchMaterial>(R.id.api_switch)
         val apiKey = findViewById<EditText>(R.id.api_key)
 
         simpleSwitch.isChecked = settingsData.isSimple

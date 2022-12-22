@@ -29,90 +29,91 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="end"
             android:orientation="vertical">
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/simple_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
-                android:text="簡易モード"
+                android:text="@string/settings.switch_simple"
                 android:theme="@style/SwitchStyle" />
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/mention_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="\@YouTubeを含める"
+                android:text="@string/settings.switch_mention"
                 android:theme="@style/SwitchStyle" />
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/thumb_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="サムネイルを含める"
+                android:text="@string/settings.switch_thumb"
                 android:theme="@style/SwitchStyle" />
 
             <RadioGroup
                 android:id="@+id/thumb_type_group"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="32dp">
+                android:layout_marginStart="32dp">
 
                 <RadioButton
                     android:id="@+id/thumb_type_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="URL"
+                    android:text="@string/settings.radio_type_url"
                     android:theme="@style/RadioStyle" />
 
                 <RadioButton
                     android:id="@+id/thumb_type_img"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="画像データ"
+                    android:text="@string/settings.radio_type_img"
                     android:theme="@style/RadioStyle" />
             </RadioGroup>
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/ch_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="チャンネル名を含める"
+                android:text="@string/settings.switch_ch"
                 android:theme="@style/SwitchStyle" />
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/api_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="自分で発行したAPIキーを使う"
+                android:text="@string/settings.switch_api"
                 android:theme="@style/SwitchStyle" />
 
             <EditText
                 android:id="@+id/api_key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
+                android:layout_marginStart="32dp"
                 android:ems="10"
                 android:inputType="text"
-                android:text="Name" />
+                android:hint="@string/settings.edit_api_key"
+                android:autofillHints=""/>
 
             <Button
                 android:id="@+id/save_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="保存して閉じる" />
+                android:text="@string/settings.button_save" />
         </LinearLayout>
     </ScrollView>
 
