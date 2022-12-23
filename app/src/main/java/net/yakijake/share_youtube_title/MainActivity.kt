@@ -2,8 +2,9 @@ package net.yakijake.share_youtube_title
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import com.google.gson.Gson
@@ -67,7 +69,6 @@ class MainActivity : AppCompatActivity() {
     // ActionBarのボタンが押されたとき
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
-            Toast.makeText(applicationContext, "アプリ設定を開きます", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, SettingsActivity::class.java)
 //            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@MainActivity).toBundle())
 
@@ -113,6 +114,8 @@ class MainActivity : AppCompatActivity() {
         .build()
 
     private fun startGetRequest() {
+        // サブスレッドじゃなくてメインスレッドで実行できるようにするやつ
+        val handler = Handler(Looper.getMainLooper())
         val videoId = findViewById<EditText>(R.id.textUri).text.toString().replace("https://youtu.be/","")
         // Requestを作成
         val request = Request.Builder()
@@ -123,21 +126,31 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 // Responseの読み出し
 //                val responseBody = response.body?.string().orEmpty()
-                // 必要に応じてCallback
-                if (response.body == null) {
-                    Toast.makeText(applicationContext, "response bodyがnullです", Toast.LENGTH_SHORT).show()
-                } else {
-                    val jsonData = JSONObject(response.body?.string().toString())
-                    val videoTitle: String = jsonData.getString("title")
-                    val channelTitle: String = jsonData.getString("channelTitle")
-                    val jsonVideoId: String = jsonData.getString("video_id")
-                    val sendIntent: Intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "$videoTitle / $channelTitle\nhttps://youtu.be/$jsonVideoId")
-                        type = "text/plain"
+                try {
+                    if (response.body != null && response.code == 200) {
+                        val jsonData = JSONObject(response.body?.string().toString())
+                        val videoTitle: String = jsonData.getString("title")
+                        val channelTitle: String = jsonData.getString("channelTitle")
+                        val jsonVideoId: String = jsonData.getString("video_id")
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, "$videoTitle / $channelTitle\nhttps://youtu.be/$jsonVideoId")
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(shareIntent)
+                    } else {
+                        Log.d("MainActivity", "response body is null or response code isn't 200")
+                        handler.post {
+                            Toast.makeText(applicationContext, "エラー:response bodyがnullかレスポンス200以外です", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    val shareIntent = Intent.createChooser(sendIntent, null)
-                    startActivity(shareIntent)
+                } catch (e:Exception) {
+                    e.printStackTrace()
+                    Log.d("MainActivity", "Response parse error!")
+                    handler.post {
+                        Toast.makeText(applicationContext, "エラーが発生しました(例外)", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
