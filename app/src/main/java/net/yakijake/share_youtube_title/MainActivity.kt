@@ -1,6 +1,6 @@
 package net.yakijake.share_youtube_title
 
-import android.app.ActivityOptions
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,13 +10,34 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
+import com.google.gson.Gson
 import okhttp3.*
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
+    private var settingsData = Settings()
+
+    private val getResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                Log.d("MainActivity", "RESULT_OK")
+                // 設定を変更してたら再読み込み
+                loadSettings()
+            } else {
+                Log.d("MainActivity", "NOT RESULT_OK")
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         // ツールバーに戻るボタンを設置
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // 設定読み込み
+        loadSettings()
 
         val button = findViewById<Button>(R.id.get_button)
         button.setOnClickListener {
@@ -45,7 +69,19 @@ class MainActivity : AppCompatActivity() {
         R.id.action_settings -> {
             Toast.makeText(applicationContext, "アプリ設定を開きます", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, SettingsActivity::class.java)
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@MainActivity).toBundle())
+//            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@MainActivity).toBundle())
+
+
+            intent.putExtra("isSimple", settingsData.isSimple)
+            intent.putExtra("isMention", settingsData.isMention)
+            intent.putExtra("isChannel", settingsData.isChannel)
+            intent.putExtra("isThumbnail", settingsData.isThumbnail)
+            intent.putExtra("thumbnailType", settingsData.thumbnailType)
+            intent.putExtra("isApi", settingsData.isApi)
+            intent.putExtra("apiKey", settingsData.apiKey)
+
+            getResult.launch(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity))
+
             true
         }
         android.R.id.home -> {
@@ -110,6 +146,25 @@ class MainActivity : AppCompatActivity() {
                 // 必要に応じてCallback
             }
         })
+
+
+    }
+
+    private fun loadSettings() {
+        // ファイルから設定を読み込む
+        var settingsJson: String?
+        val fileName = "settings.json"
+        val file = File(applicationContext.filesDir, fileName)
+        try {
+            BufferedReader(FileReader(file)).use { br -> settingsJson = br.readLine() }
+            settingsData = Gson().fromJson<Settings>(settingsJson, settingsData::class.java) as Settings
+            Log.d("MainActivity",
+                "Load settings complete!\nSimple:${settingsData.isSimple}\nCh:${settingsData.isChannel}\nMention:${settingsData.isMention}\nThumb:${settingsData.isThumbnail}(Type:${settingsData.thumbnailType})\nApi:${settingsData.isApi}(key:${settingsData.apiKey})")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.d("MainActivity",
+                "Load settings error!default:\nSimple:${settingsData.isSimple}\nCh:${settingsData.isChannel}\nMention:${settingsData.isMention}\nThumb:${settingsData.isThumbnail}(Type:${settingsData.thumbnailType})\nApi:${settingsData.isApi}(key:${settingsData.apiKey})")
+        }
     }
 
     // publicになる

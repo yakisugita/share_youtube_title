@@ -7,7 +7,7 @@
     <string name="main.edit_uri">ここにURLを入力/貼り付け</string>
     <string name="main.button_get">タイトル取得</string>
     <!--  activity_main.xml用  -->
-    <string name="settings.switch_simple">簡易モード</string>
+    <string name="settings.switch_simple">失敗したときに簡易動作に切り替える</string>
     <string name="settings.switch_mention">\@Youtubeを含める</string>
     <string name="settings.switch_thumb">サムネイルを含める</string>
     <string name="settings.radio_type_url">URL</string>

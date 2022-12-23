@@ -1,5 +1,7 @@
 package net.yakijake.share_youtube_title
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -24,10 +26,8 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // val gsonData = gsonData()
-        // 設定から取得して画面のSwitchとかを現在の状態にする
+        // MainActivity側が現在の設定値を渡してくれるので、して取得して画面を現在の設定の状態にする
         Log.d("SettingsActivity", "Setup settings UI..")
-        val settingsData = MainActivity.Settings()
-
         val simpleSwitch = findViewById<SwitchMaterial>(R.id.simple_switch)
         val mentionSwitch = findViewById<SwitchMaterial>(R.id.mention_switch)
         val thumbSwitch = findViewById<SwitchMaterial>(R.id.thumb_switch)
@@ -36,26 +36,28 @@ class SettingsActivity : AppCompatActivity() {
         val apiSwitch = findViewById<SwitchMaterial>(R.id.api_switch)
         val apiKey = findViewById<EditText>(R.id.api_key)
 
-        simpleSwitch.isChecked = settingsData.isSimple
-        mentionSwitch.isChecked = settingsData.isMention
-        thumbSwitch.isChecked = settingsData.isThumbnail
-        if (settingsData.thumbnailType == 0) {
+        simpleSwitch.isChecked = intent.getBooleanExtra("isSimple", false)
+        mentionSwitch.isChecked = intent.getBooleanExtra("isMention", false)
+        thumbSwitch.isChecked = intent.getBooleanExtra("isThumbnail", false)
+
+        if (intent.getIntExtra("thumbnailType", 0) == 0) {
             thumbTypeGroup.check(R.id.thumb_type_url)
         } else {
             thumbTypeGroup.check(R.id.thumb_type_img)
         }
-        chSwitch.isChecked = settingsData.isChannel
-        apiSwitch.isChecked = settingsData.isApi
-        apiKey.setText(settingsData.apiKey)
+        chSwitch.isChecked = intent.getBooleanExtra("isChannel", false)
+        apiSwitch.isChecked = intent.getBooleanExtra("isApi", false)
+        apiKey.setText(intent.getStringExtra("apiKey"))
 
         Log.d("SettingsActivity", "Setup UI done")
 
 
         val saveButton = findViewById<Button>(R.id.save_button)
         saveButton.setOnClickListener {
-            // 設定を上書きしてファイルにも保存
+            // 設定をファイルに保存
             Log.d("SettingsActivity", "Saving settings...")
 
+            val settingsData = MainActivity.Settings()
             settingsData.isSimple = simpleSwitch.isChecked
             settingsData.isMention = mentionSwitch.isChecked
             settingsData.isThumbnail = thumbSwitch.isChecked
@@ -80,6 +82,11 @@ class SettingsActivity : AppCompatActivity() {
             }
             Log.d("SettingsActivity", "Save settings done")
             Toast.makeText(applicationContext, "設定を変更しました!", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent()
+            // OKだよーっていう値を入れてアクティビティを終了
+            setResult(Activity.RESULT_OK, intent)
+
             // アニメーションしながらfinish
             finishAfterTransition()
         }
