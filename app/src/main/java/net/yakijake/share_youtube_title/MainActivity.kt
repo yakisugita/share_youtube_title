@@ -66,6 +66,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        // intentが更新されたら
+        if (intent?.action == Intent.ACTION_SEND) {
+            if ("text/plain" == intent.type) {
+                setIntent(intent)
+                handleSendText(intent) // Handle text being sent
+            }
+        }
+    }
+
     // ActionBarのボタンが押されたとき
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
@@ -103,7 +114,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleSendText(intent: Intent) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-            Toast.makeText(applicationContext, "共有されました:$it", Toast.LENGTH_SHORT).show()
+            findViewById<EditText>(R.id.textUri).setText(it)
+            startGetRequest()
         }
     }
 
@@ -127,22 +139,58 @@ class MainActivity : AppCompatActivity() {
                 // Responseの読み出し
 //                val responseBody = response.body?.string().orEmpty()
                 try {
-                    if (response.body != null && response.code == 200) {
-                        val jsonData = JSONObject(response.body?.string().toString())
-                        val videoTitle: String = jsonData.getString("title")
-                        val channelTitle: String = jsonData.getString("channelTitle")
-                        val jsonVideoId: String = jsonData.getString("video_id")
-                        val sendIntent: Intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, "$videoTitle / $channelTitle\nhttps://youtu.be/$jsonVideoId")
-                            type = "text/plain"
+                    if (response.code == 200) {
+                        if (response.body != null) {
+                            val jsonData = JSONObject(response.body?.string().toString())
+                            val videoTitle: String = jsonData.getString("title")
+                            val channelTitle: String = jsonData.getString("channelTitle")
+                            val jsonVideoId: String = jsonData.getString("video_id")
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "$videoTitle / $channelTitle\nhttps://youtu.be/$jsonVideoId")
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            startActivity(shareIntent)
+                        } else {
+                            Log.d("MainActivity", "response body is null")
+                            handler.post {
+                                Toast.makeText(applicationContext, "エラー:response bodyがnullです", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        startActivity(shareIntent)
                     } else {
-                        Log.d("MainActivity", "response body is null or response code isn't 200")
-                        handler.post {
-                            Toast.makeText(applicationContext, "エラー:response bodyがnullかレスポンス200以外です", Toast.LENGTH_SHORT).show()
+                        Log.d("MainActivity", "response code isn't 200")
+                        // 「失敗したときに簡易動作にする」がONなら
+                        if (settingsData.isSimple) {
+                            try {
+                                if (intent.action == Intent.ACTION_SEND) {
+                                    if ("text/plain" == intent.type) {
+                                        val videoTitle = intent.getStringExtra(Intent.EXTRA_SUBJECT)
+                                        val videoUrl = intent.getStringExtra(Intent.EXTRA_TEXT)
+                                        Log.d("MainActivity", "Simple mode:Text:$videoTitle URL:$videoUrl")
+                                        handler.post {
+                                            Toast.makeText(applicationContext, "簡易動作しています", Toast.LENGTH_SHORT).show()
+                                        }
+                                        val sendIntent: Intent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(Intent.EXTRA_TEXT, "$videoTitle\n$videoUrl")
+                                            type = "text/plain"
+                                        }
+                                        val shareIntent = Intent.createChooser(sendIntent, null)
+                                        startActivity(shareIntent)
+                                    }
+                                }
+                            } catch (e:Exception) {
+                                Log.d("MainActivity", "Simple mode error")
+                                handler.post {
+                                    Toast.makeText(applicationContext, "簡易動作を試しましたが失敗しました", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            Log.d("MainActivity", "not simple mode")
+                            handler.post {
+                                Toast.makeText(applicationContext, "情報を取得できませんでした", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 } catch (e:Exception) {
