@@ -129,9 +129,14 @@ class MainActivity : AppCompatActivity() {
         // サブスレッドじゃなくてメインスレッドで実行できるようにするやつ
         val handler = Handler(Looper.getMainLooper())
         val videoId = findViewById<EditText>(R.id.textUri).text.toString().replace("https://youtu.be/","")
+        val requestUrl :String = if (settingsData.isApi) {
+            "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=$videoId&key=${settingsData.apiKey}"
+        } else {
+            "https://yakijake.net/products/share_youtube_title/via.php?id=$videoId"
+        }
         // Requestを作成
         val request = Request.Builder()
-            .url("https://yakijake.net/products/share_youtube_title/via.php?id=$videoId")
+            .url(requestUrl)
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -142,12 +147,43 @@ class MainActivity : AppCompatActivity() {
                     if (response.code == 200) {
                         if (response.body != null) {
                             val jsonData = JSONObject(response.body?.string().toString())
-                            val videoTitle: String = jsonData.getString("title")
-                            val channelTitle: String = jsonData.getString("channelTitle")
-                            val jsonVideoId: String = jsonData.getString("video_id")
+                            val videoTitle: String
+                            val channelTitle: String
+                            val jsonVideoId: String
+                            val thumbnailUrl: String
+                            if (settingsData.isApi) {
+                                val jsonItems = jsonData.getJSONArray("items")
+                                val jsonItem = jsonItems.getJSONObject(0)
+                                val jsonSnippet = jsonItem.getJSONObject("snippet")
+                                videoTitle = jsonSnippet.getString("title")
+                                channelTitle = jsonSnippet.getString("channelTitle")
+                                jsonVideoId = jsonItem.getString("id")
+                                thumbnailUrl = jsonSnippet.getJSONObject("thumbnails").getJSONObject("maxres").getString("url")
+                            } else {
+                                videoTitle = jsonData.getString("title")
+                                channelTitle = jsonData.getString("channelTitle")
+                                jsonVideoId = jsonData.getString("video_id")
+                                thumbnailUrl = jsonData.getString("thumbnailMaxresUrl")
+                            }
+                            var shareText: String = videoTitle
+                            if (settingsData.isChannel) {
+                                shareText+=" / $channelTitle"
+                            }
+                            if (settingsData.isMention) {
+                                shareText+=" @YouTubeより"
+                            }
+                            if (settingsData.isThumbnail) {
+                                // サムネイル
+                                if (settingsData.thumbnailType == 1) {
+                                    //
+                                } else {
+                                    // URLとして共有
+                                    shareText+="\n$thumbnailUrl"
+                                }
+                            }
                             val sendIntent: Intent = Intent().apply {
                                 action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, "$videoTitle / $channelTitle\nhttps://youtu.be/$jsonVideoId")
+                                putExtra(Intent.EXTRA_TEXT, "$shareText\nhttps://youtu.be/$jsonVideoId")
                                 type = "text/plain"
                             }
                             val shareIntent = Intent.createChooser(sendIntent, null)
