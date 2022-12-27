@@ -8,12 +8,16 @@
     <string name="main.button_get">タイトル取得</string>
     <!--  activity_main.xml用  -->
     <string name="settings.switch_simple">失敗したときに簡易動作に切り替える</string>
-    <string name="settings.switch_mention">\@Youtubeを含める</string>
+    <string name="settings.desc_simple">YouTubeアプリから直接共有されたときのみ発動します\n発動したときはチャンネル名やサムネイルの共有はできません</string>
+    <string name="settings.switch_mention">「\@Youtubeより」を含める</string>
     <string name="settings.switch_thumb">サムネイルを含める</string>
+    <string name="settings.desc_thumb">画像データの共有だと、対応していないアプリがあるかもしれません</string>
     <string name="settings.radio_type_url">URL</string>
     <string name="settings.radio_type_img">画像データ</string>
     <string name="settings.switch_ch">チャンネル名を含める</string>
     <string name="settings.switch_api">自分で発行したAPIキーを使う</string>
+    <string name="settings.desc_api">OFF:焼きすぎた鮭のサーバーを経由して情報を取得します(鯖落ちするときがあるかも)\nON:YouTubeから直接取得します\n※APIキーの入力が必要です↓</string>
     <string name="settings.edit_api_key">APIキーを入力</string>
+    <string name="settings.desc_api_key">発行の仕方は「YouTube Data api v3 apiキー」で検索すると出てきます</string>
     <string name="settings.button_save">保存して閉じる</string>
 </resources>

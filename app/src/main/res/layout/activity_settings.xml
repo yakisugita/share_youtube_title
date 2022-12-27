@@ -41,6 +41,13 @@
                 android:text="@string/settings.switch_simple"
                 android:theme="@style/SwitchStyle" />
 
+            <TextView
+                android:id="@+id/simple_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/settings.desc_simple" />
+
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/mention_switch"
                 android:layout_width="match_parent"
@@ -58,6 +65,13 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/settings.switch_thumb"
                 android:theme="@style/SwitchStyle" />
+
+            <TextView
+                android:id="@+id/thumb_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/settings.desc_thumb" />
 
             <RadioGroup
                 android:id="@+id/thumb_type_group"
@@ -98,15 +112,29 @@
                 android:text="@string/settings.switch_api"
                 android:theme="@style/SwitchStyle" />
 
+            <TextView
+                android:id="@+id/api_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/settings.desc_api" />
+
             <EditText
                 android:id="@+id/api_key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:autofillHints=""
                 android:ems="10"
-                android:inputType="text"
                 android:hint="@string/settings.edit_api_key"
-                android:autofillHints=""/>
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/api_key_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/settings.desc_api_key" />
 
             <Button
                 android:id="@+id/save_button"
