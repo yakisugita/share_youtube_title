@@ -31,7 +31,6 @@ class SettingsActivity : AppCompatActivity() {
         val simpleSwitch = findViewById<SwitchMaterial>(R.id.simple_switch)
         val mentionSwitch = findViewById<SwitchMaterial>(R.id.mention_switch)
         val thumbSwitch = findViewById<SwitchMaterial>(R.id.thumb_switch)
-        val thumbTypeGroup = findViewById<RadioGroup>(R.id.thumb_type_group)
         val chSwitch = findViewById<SwitchMaterial>(R.id.ch_switch)
         val apiSwitch = findViewById<SwitchMaterial>(R.id.api_switch)
         val apiKey = findViewById<EditText>(R.id.api_key)
@@ -39,12 +38,6 @@ class SettingsActivity : AppCompatActivity() {
         simpleSwitch.isChecked = intent.getBooleanExtra("isSimple", false)
         mentionSwitch.isChecked = intent.getBooleanExtra("isMention", false)
         thumbSwitch.isChecked = intent.getBooleanExtra("isThumbnail", false)
-
-        if (intent.getIntExtra("thumbnailType", 0) == 0) {
-            thumbTypeGroup.check(R.id.thumb_type_url)
-        } else {
-            thumbTypeGroup.check(R.id.thumb_type_img)
-        }
         chSwitch.isChecked = intent.getBooleanExtra("isChannel", false)
         apiSwitch.isChecked = intent.getBooleanExtra("isApi", false)
         apiKey.setText(intent.getStringExtra("apiKey"))
@@ -61,11 +54,6 @@ class SettingsActivity : AppCompatActivity() {
             settingsData.isSimple = simpleSwitch.isChecked
             settingsData.isMention = mentionSwitch.isChecked
             settingsData.isThumbnail = thumbSwitch.isChecked
-            if (thumbTypeGroup.checkedRadioButtonId == R.id.thumb_type_url) {
-                settingsData.thumbnailType = 0
-            } else {
-                settingsData.thumbnailType = 1
-            }
             settingsData.isChannel = chSwitch.isChecked
             settingsData.isApi = apiSwitch.isChecked
             settingsData.apiKey = apiKey.text.toString()

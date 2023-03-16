@@ -73,27 +73,6 @@
                 android:layout_marginStart="32dp"
                 android:text="@string/settings.desc_thumb" />
 
-            <RadioGroup
-                android:id="@+id/thumb_type_group"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="32dp">
-
-                <RadioButton
-                    android:id="@+id/thumb_type_url"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings.radio_type_url"
-                    android:theme="@style/RadioStyle" />
-
-                <RadioButton
-                    android:id="@+id/thumb_type_img"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings.radio_type_img"
-                    android:theme="@style/RadioStyle" />
-            </RadioGroup>
-
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/ch_switch"
                 android:layout_width="match_parent"

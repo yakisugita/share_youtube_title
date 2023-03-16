@@ -11,9 +11,7 @@
     <string name="settings.desc_simple">YouTubeアプリから直接共有されたときのみ発動します\n発動したときはチャンネル名やサムネイルの共有はできません</string>
     <string name="settings.switch_mention">「\@Youtubeより」を含める</string>
     <string name="settings.switch_thumb">サムネイルを含める</string>
-    <string name="settings.desc_thumb">画像データの共有だと、対応していないアプリがあるかもしれません</string>
-    <string name="settings.radio_type_url">URL</string>
-    <string name="settings.radio_type_img">画像データ</string>
+    <string name="settings.desc_thumb">現時点では、自分で発行したAPIキーを使用した場合使用できません</string>
     <string name="settings.switch_ch">チャンネル名を含める</string>
     <string name="settings.switch_api">自分で発行したAPIキーを使う</string>
     <string name="settings.desc_api">OFF:焼きすぎた鮭のサーバーを経由して情報を取得します(鯖落ちするときがあるかも)\nON:YouTubeから直接取得します\n※APIキーの入力が必要です↓</string>

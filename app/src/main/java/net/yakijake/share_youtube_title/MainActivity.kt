@@ -15,13 +15,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import okhttp3.*
 import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.io.IOException
+import java.io.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -88,7 +87,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("isMention", settingsData.isMention)
             intent.putExtra("isChannel", settingsData.isChannel)
             intent.putExtra("isThumbnail", settingsData.isThumbnail)
-            intent.putExtra("thumbnailType", settingsData.thumbnailType)
             intent.putExtra("isApi", settingsData.isApi)
             intent.putExtra("apiKey", settingsData.apiKey)
 
@@ -173,21 +171,30 @@ class MainActivity : AppCompatActivity() {
                                 shareText+=" @YouTubeより"
                             }
                             if (settingsData.isThumbnail) {
-                                // サムネイル
-                                if (settingsData.thumbnailType == 1) {
-                                    //
+                                if (settingsData.isApi) {
+                                    // 自分のAPI使ってたらURLだけ載せる
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(Intent.EXTRA_TEXT, "$shareText\nhttps://youtu.be/$jsonVideoId\n$thumbnailUrl")
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    startActivity(shareIntent)
                                 } else {
-                                    // URLとして共有
-                                    shareText+="\n$thumbnailUrl"
+                                    // サムネイルを共有
+                                    val url = "https://yakijake.net/products/share_youtube_title/via.php?id=$jsonVideoId&mode=thumbnail"
+                                    val filePath = "$cacheDir/image.png"
+                                    shareImage(url, filePath, "$shareText\nhttps://youtu.be/$jsonVideoId")
                                 }
+                            } else {
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, "$shareText\nhttps://youtu.be/$jsonVideoId")
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                startActivity(shareIntent)
                             }
-                            val sendIntent: Intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, "$shareText\nhttps://youtu.be/$jsonVideoId")
-                                type = "text/plain"
-                            }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-                            startActivity(shareIntent)
                         } else {
                             Log.d("MainActivity", "response body is null")
                             handler.post {
@@ -256,11 +263,45 @@ class MainActivity : AppCompatActivity() {
             BufferedReader(FileReader(file)).use { br -> settingsJson = br.readLine() }
             settingsData = Gson().fromJson<Settings>(settingsJson, settingsData::class.java) as Settings
             Log.d("MainActivity",
-                "Load settings complete!\nSimple:${settingsData.isSimple}\nCh:${settingsData.isChannel}\nMention:${settingsData.isMention}\nThumb:${settingsData.isThumbnail}(Type:${settingsData.thumbnailType})\nApi:${settingsData.isApi}(key:${settingsData.apiKey})")
+                "Load settings complete!\nSimple:${settingsData.isSimple}\nCh:${settingsData.isChannel}\nMention:${settingsData.isMention}\nThumb:${settingsData.isThumbnail}\nApi:${settingsData.isApi}(key:${settingsData.apiKey})")
         } catch (e: IOException) {
             e.printStackTrace()
             Log.d("MainActivity",
-                "Load settings error!default:\nSimple:${settingsData.isSimple}\nCh:${settingsData.isChannel}\nMention:${settingsData.isMention}\nThumb:${settingsData.isThumbnail}(Type:${settingsData.thumbnailType})\nApi:${settingsData.isApi}(key:${settingsData.apiKey})")
+                "Load settings error!default:\nSimple:${settingsData.isSimple}\nCh:${settingsData.isChannel}\nMention:${settingsData.isMention}\nThumb:${settingsData.isThumbnail}\nApi:${settingsData.isApi}(key:${settingsData.apiKey})")
+        }
+    }
+
+    // 画像共有部分以外はChatGPTがほぼ作ったコード
+    fun shareImage(url: String, filePath: String, shareText: String) {
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+        val response = client.newCall(request).execute()
+        val inputStream = response.body?.byteStream()
+
+        val file = File(filePath)
+        val outputStream = FileOutputStream(file)
+        val buffer = ByteArray(4 * 1024)
+
+        var read: Int
+        while (inputStream?.read(buffer).also { read = it ?: -1 } != -1) {
+            outputStream.write(buffer, 0, read)
+        }
+        outputStream.flush()
+
+        response.body?.close()
+        inputStream?.close()
+        outputStream.close()
+
+        val imageUri = FileProvider.getUriForFile(applicationContext, "$packageName.fileprovider", file)
+        try {
+            ShareCompat.IntentBuilder(this).apply {
+                setChooserTitle("共有withサムネ画像")
+                setText(shareText)
+                setStream(imageUri)
+                setType("image/png")
+            }.startChooser()
+        } catch (e:Exception) {
+            Log.e("startChooser",e.toString())
         }
     }
 
@@ -270,7 +311,6 @@ class MainActivity : AppCompatActivity() {
         var isChannel: Boolean = false
         var isMention: Boolean = false
         var isThumbnail: Boolean = false
-        var thumbnailType: Int = 0
         var isApi: Boolean = false
         var apiKey: String = ""
         var isSimple: Boolean = false
